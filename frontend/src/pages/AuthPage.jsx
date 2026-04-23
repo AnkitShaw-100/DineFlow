@@ -5,7 +5,7 @@ import { Utensils } from 'lucide-react'
 
 export default function AuthPage() {
   return (
-    <div className='min-h-screen bg-gradient-to-br from-background to-secondary flex items-center justify-center p-4'>
+    <div className='min-h-screen bg-linear-to-br from-background to-secondary flex items-center justify-center p-4'>
       <Card className='w-full max-w-md shadow-2xl'>
         <CardHeader className='text-center space-y-4'>
           <div className='flex justify-center'>
