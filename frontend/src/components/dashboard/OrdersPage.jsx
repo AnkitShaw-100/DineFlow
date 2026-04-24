@@ -88,7 +88,7 @@ export default function OrdersPage() {
       (tab === "All" || o.status === tab) &&
       (q === "" ||
         o.id.includes(q) ||
-        o.table.toLowerCase().includes(q.toLowerCase()))
+        o.table.toLowerCase().includes(q.toLowerCase())),
   );
 
   return (
@@ -163,9 +163,7 @@ export default function OrdersPage() {
                   {o.items} items
                 </td>
                 <td className="px-5 py-4">{o.server}</td>
-                <td className="px-5 py-4 text-muted-foreground">
-                  {o.time}
-                </td>
+                <td className="px-5 py-4 text-muted-foreground">{o.time}</td>
                 <td className="px-5 py-4 font-semibold">
                   ${o.total.toFixed(2)}
                 </td>

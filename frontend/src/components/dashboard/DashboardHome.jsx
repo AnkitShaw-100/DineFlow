@@ -162,9 +162,7 @@ export default function DashboardHome() {
                   }`}
                 />
                 <span
-                  className={
-                    c.done ? "text-muted-foreground line-through" : ""
-                  }
+                  className={c.done ? "text-muted-foreground line-through" : ""}
                 >
                   {c.t}
                 </span>

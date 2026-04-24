@@ -77,8 +77,8 @@ function RootLayout() {
             <code className="rounded bg-muted px-1.5 py-0.5 text-sm">
               VITE_CLERK_PUBLISHABLE_KEY
             </code>{" "}
-            to enable sign-in and sign-up. You can find it in your Clerk dashboard under{" "}
-            <strong>API Keys</strong>.
+            to enable sign-in and sign-up. You can find it in your Clerk
+            dashboard under <strong>API Keys</strong>.
           </p>
         </div>
       </div>
@@ -181,4 +181,3 @@ const router = createBrowserRouter([
 export default function App() {
   return <RouterProvider router={router} />;
 }
-

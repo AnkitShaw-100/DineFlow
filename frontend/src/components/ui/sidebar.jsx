@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import * as TogglePrimitive from "@radix-ui/react-toggle";
@@ -50,7 +49,7 @@ export const SidebarProvider = React.forwardRef(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const isMobile = useIsMobile();
     const [openMobile, setOpenMobile] = React.useState(false);
@@ -66,7 +65,7 @@ export const SidebarProvider = React.forwardRef(
 
         document.cookie = `sidebar_state=${next}; path=/; max-age=${60 * 60 * 24 * 7}`;
       },
-      [open, onOpenChange]
+      [open, onOpenChange],
     );
 
     const toggleSidebar = React.useCallback(() => {
@@ -116,7 +115,7 @@ export const SidebarProvider = React.forwardRef(
         </TooltipProvider>
       </SidebarContext.Provider>
     );
-  }
+  },
 );
 
 /* ================= SIDEBAR ================= */
@@ -149,7 +148,7 @@ export const Sidebar = React.forwardRef(
         {children}
       </div>
     );
-  }
+  },
 );
 
 /* ================= TRIGGER ================= */
@@ -173,7 +172,7 @@ export const SidebarTrigger = React.forwardRef(
         <PanelLeft />
       </Button>
     );
-  }
+  },
 );
 
 /* ================= CONTENT ================= */
@@ -215,12 +214,12 @@ export const SidebarMenuButton = React.forwardRef(
         ref={ref}
         className={cn(
           "flex items-center gap-2 rounded-md p-2 text-sm hover:bg-muted",
-          className
+          className,
         )}
         {...props}
       />
     );
-  }
+  },
 );
 
 export const SidebarGroup = ({ className, ...props }) => (
@@ -228,7 +227,13 @@ export const SidebarGroup = ({ className, ...props }) => (
 );
 
 export const SidebarGroupLabel = ({ className, ...props }) => (
-  <div className={cn("px-2 py-1.5 text-xs font-semibold text-muted-foreground", className)} {...props} />
+  <div
+    className={cn(
+      "px-2 py-1.5 text-xs font-semibold text-muted-foreground",
+      className,
+    )}
+    {...props}
+  />
 );
 
 export const SidebarGroupContent = ({ className, ...props }) => (

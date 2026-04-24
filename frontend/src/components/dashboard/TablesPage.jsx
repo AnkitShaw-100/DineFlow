@@ -66,9 +66,7 @@ export default function TablesPage() {
             >
               <span className={`h-2 w-2 rounded-full ${statusMeta[s].dot}`} />
               {statusMeta[s].label}
-              <span className="text-muted-foreground">
-                ({counts[s] || 0})
-              </span>
+              <span className="text-muted-foreground">({counts[s] || 0})</span>
             </div>
           ))}
         </div>
@@ -93,9 +91,7 @@ export default function TablesPage() {
 
                 <div className="flex items-center gap-1.5 text-xs opacity-80">
                   <Users className="h-3.5 w-3.5" />
-                  {t.guests
-                    ? `${t.guests}/${t.seats}`
-                    : `${t.seats} seats`}
+                  {t.guests ? `${t.guests}/${t.seats}` : `${t.seats} seats`}
                 </div>
 
                 {t.duration && (
