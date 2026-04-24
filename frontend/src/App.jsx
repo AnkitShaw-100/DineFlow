@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { ClerkProvider } from "@clerk/clerk-react";
 import LandingPage from "./components/landing/LandingPage.jsx";
-import SignInPage from "./components/landing/LandingPage.jsx";
-import SignUpPage from "./components/landing/LandingPage.jsx";
+import SignInPage from "./components/auth/SignInPage.jsx";
+import SignUpPage from "./components/auth/SignUpPage.jsx";
 import DashboardHome from "./components/dashboard/DashboardHome.jsx";
 import OrdersPage from "./components/dashboard/OrdersPage.jsx";
 import TablesPage from "./components/dashboard/TablesPage.jsx";
