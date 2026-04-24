@@ -65,7 +65,7 @@
   --radius: 0.875rem;
 
   /* Dine Flow brand */
-  --background: oklch(0.97 0.018 92);          /* warm cream */
+  --background: oklch(0.97 0.018 92); /* warm cream */
   --foreground: oklch(0.22 0.04 180);
 
   --card: oklch(1 0 0);
@@ -73,7 +73,7 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.04 180);
 
-  --primary: oklch(0.42 0.085 175);            /* deep teal */
+  --primary: oklch(0.42 0.085 175); /* deep teal */
   --primary-foreground: oklch(0.98 0.02 92);
   --primary-glow: oklch(0.55 0.11 175);
 
@@ -86,7 +86,7 @@
   --accent: oklch(0.92 0.04 95);
   --accent-foreground: oklch(0.28 0.05 180);
 
-  --highlight: oklch(0.86 0.16 92);            /* sunshine yellow */
+  --highlight: oklch(0.86 0.16 92); /* sunshine yellow */
   --highlight-foreground: oklch(0.25 0.05 180);
 
   --cream: oklch(0.97 0.018 92);
@@ -115,12 +115,17 @@
   --sidebar-border: oklch(0.4 0.06 178);
   --sidebar-ring: oklch(0.86 0.16 92);
 
-  --gradient-hero: radial-gradient(
+  --gradient-hero:
+    radial-gradient(
       80% 60% at 80% 0%,
       oklch(0.86 0.16 92 / 0.45),
       transparent 60%
     ),
-    radial-gradient(60% 50% at 0% 100%, oklch(0.42 0.085 175 / 0.18), transparent 60%);
+    radial-gradient(
+      60% 50% at 0% 100%,
+      oklch(0.42 0.085 175 / 0.18),
+      transparent 60%
+    );
   --gradient-cta: linear-gradient(135deg, var(--primary), var(--primary-glow));
   --shadow-soft: 0 12px 40px -16px oklch(0.42 0.085 175 / 0.35);
   --shadow-card: 0 8px 24px -12px oklch(0.22 0.04 180 / 0.18);
@@ -174,7 +179,10 @@
     font-feature-settings: "ss01", "cv11";
   }
 
-  h1, h2, h3, .font-display {
+  h1,
+  h2,
+  h3,
+  .font-display {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }
