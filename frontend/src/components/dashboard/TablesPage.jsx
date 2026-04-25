@@ -1,48 +1,76 @@
-import { Users, Clock } from "lucide-react";
-
-const tables = [
-  { id: "T-01", seats: 2, status: "available" },
-  { id: "T-02", seats: 2, status: "seated", guests: 2, duration: "0:18" },
-  { id: "T-03", seats: 4, status: "available" },
-  { id: "T-04", seats: 4, status: "seated", guests: 3, duration: "0:42" },
-  { id: "T-05", seats: 4, status: "cleaning" },
-  { id: "T-06", seats: 6, status: "billed", guests: 5, duration: "1:24" },
-  { id: "T-07", seats: 2, status: "seated", guests: 2, duration: "0:32" },
-  { id: "T-08", seats: 4, status: "available" },
-  { id: "T-09", seats: 6, status: "seated", guests: 4, duration: "1:05" },
-  { id: "T-10", seats: 2, status: "available" },
-  { id: "T-11", seats: 4, status: "seated", guests: 3, duration: "0:24" },
-  { id: "T-12", seats: 8, status: "billed", guests: 6, duration: "1:48" },
-];
+import { Users, Clock, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/clerk-react";
+import { apiFetch } from "../../lib/apiClient.js";
+import { Button } from "../ui/button.jsx";
+import { Input } from "../ui/input.jsx";
 
 const statusMeta = {
   available: {
     label: "Available",
     bg: "bg-card",
     ring: "ring-border",
-    dot: "bg-mint",
+    dot: "bg-muted-foreground/60",
   },
   seated: {
     label: "Seated",
-    bg: "bg-primary text-primary-foreground",
-    ring: "ring-primary",
-    dot: "bg-highlight",
+    bg: "bg-card",
+    ring: "ring-border",
+    dot: "bg-muted-foreground/60",
   },
   billed: {
     label: "Billed",
-    bg: "bg-highlight text-highlight-foreground",
-    ring: "ring-highlight",
-    dot: "bg-primary",
+    bg: "bg-card",
+    ring: "ring-border",
+    dot: "bg-muted-foreground/60",
   },
   cleaning: {
     label: "Cleaning",
-    bg: "bg-muted text-muted-foreground",
+    bg: "bg-card",
     ring: "ring-border",
-    dot: "bg-terracotta",
+    dot: "bg-muted-foreground/60",
   },
 };
 
 export default function TablesPage() {
+  const { getToken } = useAuth();
+  const [tables, setTables] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [createOpen, setCreateOpen] = useState(false);
+  const [code, setCode] = useState("");
+  const [seats, setSeats] = useState(4);
+
+  async function reloadTables() {
+    const token = await getToken();
+    const data = await apiFetch("/v1/tables", { token });
+    setTables(data.tables ?? []);
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      try {
+        setLoading(true);
+        setError("");
+        const token = await getToken();
+        const data = await apiFetch("/v1/tables", { token });
+        if (!cancelled) setTables(data.tables ?? []);
+      } catch (e) {
+        if (!cancelled) setError(e?.message || "Failed to load tables");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [getToken]);
+
   const counts = tables.reduce((acc, t) => {
     acc[t.status] = (acc[t.status] || 0) + 1;
     return acc;
@@ -58,7 +86,7 @@ export default function TablesPage() {
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           {Object.keys(statusMeta).map((s) => (
             <div
               key={s}
@@ -69,13 +97,36 @@ export default function TablesPage() {
               <span className="text-muted-foreground">({counts[s] || 0})</span>
             </div>
           ))}
+          <Button onClick={() => setCreateOpen(true)}>
+            <Plus className="mr-1 h-4 w-4" />
+            Create table
+          </Button>
         </div>
       </div>
 
       <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {loading && (
+            <div className="col-span-full text-center text-sm text-muted-foreground">
+              Loading tables…
+            </div>
+          )}
+          {!loading && error && (
+            <div className="col-span-full text-center text-sm text-destructive">
+              {error}
+            </div>
+          )}
           {tables.map((t) => {
             const meta = statusMeta[t.status];
+            const duration =
+              t.seatedAt && t.status === "seated"
+                ? Math.max(0, Date.now() - new Date(t.seatedAt).getTime())
+                : null;
+            const mins = duration ? Math.floor(duration / 60000) : 0;
+            const hrs = duration ? Math.floor(mins / 60) : 0;
+            const minPart = duration ? mins % 60 : 0;
+            const durationLabel =
+              duration ? `${hrs}:${String(minPart).padStart(2, "0")}` : null;
 
             return (
               <button
@@ -84,20 +135,21 @@ export default function TablesPage() {
               >
                 <div className="flex w-full items-center justify-between">
                   <span className="font-display text-2xl font-bold">
-                    {t.id}
+                    {String(t.id).replace(/^[^\d]*/, "") || t.id}
                   </span>
                   <span className={`h-2.5 w-2.5 rounded-full ${meta.dot}`} />
                 </div>
+                <div className="text-xs opacity-70">{t.id}</div>
 
                 <div className="flex items-center gap-1.5 text-xs opacity-80">
                   <Users className="h-3.5 w-3.5" />
                   {t.guests ? `${t.guests}/${t.seats}` : `${t.seats} seats`}
                 </div>
 
-                {t.duration && (
+                {durationLabel && (
                   <div className="flex items-center gap-1.5 text-xs opacity-80">
                     <Clock className="h-3.5 w-3.5" />
-                    {t.duration}
+                    {durationLabel}
                   </div>
                 )}
 
@@ -109,6 +161,72 @@ export default function TablesPage() {
           })}
         </div>
       </div>
+
+      {createOpen && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/35 p-4">
+          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-card">
+            <h2 className="font-display text-xl font-semibold">Create table</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Add a table code and choose seats (max 6).
+            </p>
+
+            <div className="mt-5 space-y-4">
+              <div>
+                <div className="text-sm font-medium">Table code</div>
+                <Input
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="T-01"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <div className="text-sm font-medium">Seats</div>
+                <input
+                  type="range"
+                  min={1}
+                  max={6}
+                  step={1}
+                  value={seats}
+                  onChange={(e) => setSeats(Number(e.target.value))}
+                  className="mt-2 w-full accent-primary"
+                />
+                <div className="mt-1 text-sm text-muted-foreground">
+                  {seats} seat{seats > 1 ? "s" : ""}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setCreateOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                disabled={!code.trim()}
+                onClick={async () => {
+                  try {
+                    setError("");
+                    const token = await getToken();
+                    await apiFetch("/v1/tables", {
+                      token,
+                      method: "POST",
+                      body: { code: code.trim(), seats },
+                    });
+                    setCode("");
+                    setSeats(4);
+                    setCreateOpen(false);
+                    await reloadTables();
+                  } catch (e) {
+                    setError(e?.message || "Failed to create table");
+                  }
+                }}
+              >
+                Create
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

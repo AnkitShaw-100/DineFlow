@@ -7,12 +7,14 @@ import DashboardHome from "./components/dashboard/DashboardHome.jsx";
 import OrdersPage from "./components/dashboard/OrdersPage.jsx";
 import TablesPage from "./components/dashboard/TablesPage.jsx";
 import AdminPage from "./components/dashboard/AdminPage.jsx";
+import MenuItemsPage from "./components/dashboard/MenuItemsPage.jsx";
 import { AppSidebar } from "./components/dashboard/AppSidebar.jsx";
 import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar.jsx";
 import { UserButton, SignedIn, SignedOut, useAuth } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import appCss from "./styles.css?url";
+import { apiFetch } from "./lib/apiClient.js";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -94,13 +96,31 @@ function RootLayout() {
 
 function DashboardLayout() {
   const navigate = useNavigate();
-  const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded, isSignedIn, getToken } = useAuth();
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
       navigate("/sign-in");
     }
   }, [isLoaded, isSignedIn, navigate]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function sync() {
+      if (!isLoaded || !isSignedIn) return;
+      try {
+        const token = await getToken();
+        if (!token) return;
+        await apiFetch("/v1/me/sync", { token, method: "POST" });
+      } catch {
+        // If sync fails, we still allow the UI to render; API calls will surface errors.
+      }
+    }
+    sync();
+    return () => {
+      cancelled = true;
+    };
+  }, [getToken, isLoaded, isSignedIn]);
 
   return (
     <>
@@ -167,6 +187,10 @@ const router = createBrowserRouter([
           {
             path: "tables",
             element: <TablesPage />,
+          },
+          {
+            path: "menu",
+            element: <MenuItemsPage />,
           },
           {
             path: "admin",

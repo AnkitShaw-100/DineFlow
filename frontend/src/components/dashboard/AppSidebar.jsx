@@ -4,6 +4,7 @@ import {
   ClipboardList,
   LayoutGrid,
   ShieldCheck,
+  UtensilsCrossed,
   Utensils,
 } from "lucide-react";
 
@@ -24,6 +25,7 @@ const items = [
   { title: "Home", url: "/dashboard", icon: Home, exact: true },
   { title: "Orders", url: "/dashboard/orders", icon: ClipboardList },
   { title: "Tables", url: "/dashboard/tables", icon: LayoutGrid },
+  { title: "Menu", url: "/dashboard/menu", icon: UtensilsCrossed },
   { title: "Admin", url: "/dashboard/admin", icon: ShieldCheck },
 ];
 
@@ -43,7 +45,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <Link to="/dashboard" className="flex items-center gap-2 px-2 py-1.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-sidebar-border bg-sidebar-accent text-sidebar-accent-foreground shadow-sm">
             <Utensils className="h-4 w-4" />
           </span>
           {!collapsed && (
