@@ -1,5 +1,5 @@
-import { createApp } from "./app.js";
-import { connectDb } from "./config/db.js";
+import { createApp } from "../backend/src/app.js";
+import { connectDb } from "../backend/src/config/db.js";
 import dotenv from "dotenv";
 import { z } from "zod";
 
